@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#14151c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Hábitos">
+<title>Hábitos</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#14151c;--s1:#1d1f29;--s2:#292c3a;--tx:#eceef6;--mu:#8a8fa6;--ac:#8b9cff;--ok:#5ee0a0;--bad:#ff7a90}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--tx);font-family:'Bricolage Grotesque',system-ui,sans-serif}
+#root{max-width:520px;margin:0 auto;min-height:100vh;padding:calc(env(safe-area-inset-top,0px) + 16px) 16px 96px}
+button,input,select{font:inherit;color:inherit}
+button{background:none;border:0;cursor:pointer}
+h1{font-size:26px;font-weight:800;margin:0;text-transform:capitalize}
+h2{font-size:15px;font-weight:600;color:var(--mu);margin:22px 0 8px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+.nav{display:flex;gap:6px;align-items:center}
+.ib{width:36px;height:36px;border-radius:12px;background:var(--s1);font-size:18px}
+.card{background:var(--s1);border-radius:18px;padding:14px;margin-bottom:10px}
+.row{display:flex;align-items:center;gap:12px;background:var(--s1);border-radius:18px;padding:12px 14px;margin-bottom:8px;border-left:5px solid var(--c)}
+.row .nm{flex:1;min-width:0}
+.row .nm b{display:block;font-weight:600;font-size:16px}
+.row .nm small{color:var(--mu);font-size:13px}
+.row.done .nm b{text-decoration:line-through;opacity:.55}
+.chk{width:40px;height:40px;border-radius:50%;border:2.5px solid var(--c);display:grid;place-items:center;font-size:20px;color:#0d1a13;flex:none}
+.chk.on{background:var(--c)}
+.qty{display:flex;align-items:center;gap:8px}
+.qty button{width:34px;height:34px;border-radius:50%;background:var(--s2);font-size:18px}
+.qty span{min-width:46px;text-align:center;font-weight:600}
+.bar{height:6px;border-radius:3px;background:var(--s2);margin-top:6px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:3px;background:var(--c);transition:width .3s}
+.tabs{position:fixed;left:0;right:0;bottom:0;background:#191b24;display:flex;justify-content:center;padding:8px 8px calc(env(safe-area-inset-bottom,0px) + 8px);border-top:1px solid var(--s2)}
+.tabs div{display:flex;width:100%;max-width:520px}
+.tabs button{flex:1;padding:10px 0;color:var(--mu);font-size:13px;font-weight:600;border-radius:12px}
+.tabs button.on{color:var(--tx);background:var(--s2)}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.grid .h{text-align:center;color:var(--mu);font-size:12px;padding:4px 0}
+.cell{aspect-ratio:1;border-radius:10px;display:grid;place-items:center;font-size:14px;background:var(--s1)}
+.cell.sel{outline:2px solid var(--tx)}
+.cell.td{font-weight:800}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.stats .card{margin:0;text-align:center}
+.stats b{display:block;font-size:26px;font-weight:800}
+.stats small{color:var(--mu);font-size:12px}
+.chart{display:flex;align-items:flex-end;gap:4px;height:110px}
+.chart div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;align-items:center;gap:4px}
+.chart i{width:100%;border-radius:5px 5px 2px 2px;background:var(--ac);min-height:3px}
+.chart small{font-size:10px;color:var(--mu)}
+.btn{background:var(--ac);color:#10131f;font-weight:800;border-radius:14px;padding:13px 18px;width:100%}
+.btn.g{background:var(--s2);color:var(--tx);font-weight:600}
+.btn.r{background:none;color:var(--bad);font-weight:600}
+.form{position:fixed;inset:0;background:var(--bg);z-index:10;overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 16px) 16px 40px}
+.form>div{max-width:520px;margin:0 auto}
+label{display:block;color:var(--mu);font-size:14px;margin:16px 0 6px}
+input[type=text],input[type=number],select{width:100%;background:var(--s1);border:1.5px solid var(--s2);border-radius:12px;padding:12px;outline:none}
+input:focus,select:focus{border-color:var(--ac)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{min-width:40px;height:40px;padding:0 12px;border-radius:12px;background:var(--s1);font-weight:600}
+.chip.on{background:var(--ac);color:#10131f}
+.sw{width:36px;height:36px;border-radius:50%;border:3px solid transparent}
+.sw.on{border-color:var(--tx)}
+.two{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.fab{position:fixed;right:18px;bottom:calc(env(safe-area-inset-bottom,0px) + 78px);width:56px;height:56px;border-radius:50%;background:var(--ac);color:#10131f;font-size:32px;font-weight:600;line-height:1;box-shadow:0 6px 18px rgba(0,0,0,.45);z-index:5}
+.empty{text-align:center;color:var(--mu);padding:40px 10px}
+.empty .btn{margin-top:14px;width:auto}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.7/babel.min.js"></script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const CATS=[['salud','Salud'],['mente','Mente'],['estudio','Estudio'],['hogar','Hogar'],['deporte','Deporte'],['otros','Otros']];
+const COLS=['#8b9cff','#5ee0a0','#ffb454','#ff7a90','#4fd1e8','#c08bff','#f2e35c','#ff9a62'];
+const DL=['L','M','X','J','V','S','D'], DI=[1,2,3,4,5,6,0];
+const pad=n=>String(n).padStart(2,'0');
+const ds=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const pd=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const addD=(s,n)=>{const d=pd(s);d.setDate(d.getDate()+n);return ds(d)};
+const load=(k,f)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?f:v}catch(e){return f}};
+const EMOJIS=['🦷','💧','🏃','🏋️','🧘','🚶','😴','🛏️','🚿','🧹','📚','📝','💻','🧠','🎸','🍎','🥗','🍽️','💊','🚭','☀️','🐶','🌱','💰'];
+const lastEmoji=v=>{v=v.trim();if(!v)return '';const a=(window.Intl&&Intl.Segmenter)?[...new Intl.Segmenter().segment(v)].map(x=>x.segment):Array.from(v);return a[a.length-1]};
+const catName=id=>(CATS.find(c=>c[0]===id)||[0,'Otros'])[1];
+
+function Ring({p,size=56}){
+  const r=size/2-5,c=2*Math.PI*r,h=size/2;
+  return <svg width={size} height={size}>
+    <circle cx={h} cy={h} r={r} fill="none" stroke="var(--s2)" strokeWidth="5"/>
+    <circle cx={h} cy={h} r={r} fill="none" stroke={p>=1?'var(--ok)':'var(--ac)'} strokeWidth="5" strokeLinecap="round"
+      strokeDasharray={c} strokeDashoffset={c*(1-p)} transform={`rotate(-90 ${h} ${h})`} style={{transition:'stroke-dashoffset .4s'}}/>
+    <text x={h} y={h+5} textAnchor="middle" fill="var(--tx)" fontSize="14" fontWeight="700">{Math.round(p*100)}%</text>
+  </svg>;
+}
+
+function Form({h,onSave,onDel,onClose,isNew}){
+  const [f,setF]=useState({emoji:'🔹',...h});
+  const set=(k,v)=>setF(x=>({...x,[k]:v}));
+  const tog=d=>set('days',f.days.includes(d)?f.days.filter(x=>x!==d):[...f.days,d]);
+  const ok=f.name.trim()&&f.days.length&&(f.goal===0||f.goal>0);
+  return <div className="form"><div>
+    <h1 style={{textTransform:'none'}}>{isNew?'Nuevo hábito':'Editar hábito'}</h1>
+    <label>Nombre</label>
+    <input type="text" value={f.name} onChange={e=>set('name',e.target.value)} placeholder="Ej. Beber agua"/>
+    <label>Emoji</label>
+    <div style={{display:'flex',gap:10,alignItems:'center'}}>
+      <input type="text" value={f.emoji} onChange={e=>set('emoji',lastEmoji(e.target.value))} style={{width:72,textAlign:'center',fontSize:26}}/>
+      <small style={{color:'var(--mu)'}}>Escribe uno con el teclado o elige abajo</small>
+    </div>
+    <div className="chips" style={{marginTop:8}}>{EMOJIS.map(e=><button key={e} className={'chip'+(f.emoji===e?' on':'')} style={{fontSize:20,padding:0}} onClick={()=>set('emoji',e)}>{e}</button>)}</div>
+    <label>Categoría</label>
+    <select value={f.cat} onChange={e=>set('cat',e.target.value)}>{CATS.map(c=><option key={c[0]} value={c[0]}>{c[1]}</option>)}</select>
+    <label>Color</label>
+    <div className="chips">{COLS.map(c=><button key={c} className={'sw'+(f.color===c?' on':'')} style={{background:c}} onClick={()=>set('color',c)}/>)}</div>
+    <label>Días de la semana</label>
+    <div className="chips">{DI.map((d,i)=><button key={d} className={'chip'+(f.days.includes(d)?' on':'')} onClick={()=>tog(d)}>{DL[i]}</button>)}</div>
+    <label>Tipo</label>
+    <div className="chips">
+      <button className={'chip'+(f.goal===0?' on':'')} onClick={()=>set('goal',0)}>Hecho / no hecho</button>
+      <button className={'chip'+(f.goal>0?' on':'')} onClick={()=>set('goal',f.goal>0?f.goal:1)}>Con cantidad</button>
+    </div>
+    {f.goal>0&&<div className="two">
+      <div><label>Objetivo</label><input type="number" min="1" value={f.goal} onChange={e=>set('goal',Math.max(1,+e.target.value||1))}/></div>
+      <div><label>Unidad</label><input type="text" value={f.unit} onChange={e=>set('unit',e.target.value)} placeholder="L, min…"/></div>
+      <div><label>Sumar de</label><input type="number" min="1" value={f.step} onChange={e=>set('step',Math.max(1,+e.target.value||1))}/></div>
+    </div>}
+    <div style={{display:'grid',gap:8,marginTop:26}}>
+      <button className="btn" disabled={!ok} style={{opacity:ok?1:.4}} onClick={()=>ok&&onSave({...f,name:f.name.trim()})}>Guardar hábito</button>
+      <button className="btn g" onClick={onClose}>Cancelar</button>
+      {!isNew&&<button className="btn r" onClick={onDel}>Eliminar hábito</button>}
+    </div>
+  </div></div>;
+}
+
+function App(){
+  const today=ds(new Date());
+  const [habits,setHabits]=useState(()=>load('hb_habits',[]));
+  const [logs,setLogs]=useState(()=>load('hb_logs',{}));
+  const [tab,setTab]=useState('hoy');
+  const [day,setDay]=useState(today);
+  const [month,setMonth]=useState(today.slice(0,7));
+  const [edit,setEdit]=useState(null);
+  useEffect(()=>{localStorage.setItem('hb_habits',JSON.stringify(habits))},[habits]);
+  useEffect(()=>{localStorage.setItem('hb_logs',JSON.stringify(logs))},[logs]);
+
+  const val=(s,id)=>(logs[s]&&logs[s][id])||0;
+  const isDone=(h,s)=>val(s,h.id)>=(h.goal||1);
+  const act=(h,s)=>h.created<=s&&h.days.includes(pd(s).getDay());
+  const stat=s=>{const hs=habits.filter(h=>act(h,s));return{t:hs.length,n:hs.filter(h=>isDone(h,s)).length}};
+  const setVal=(s,id,v)=>setLogs(l=>({...l,[s]:{...l[s],[id]:Math.max(0,v)}}));
+
+  const streaks=useMemo(()=>{
+    if(!habits.length)return{cur:0,best:0};
+    const start=habits.reduce((m,h)=>h.created<m?h.created:m,today);
+    let run=0,best=0;
+    for(let s=start;s<=today;s=addD(s,1)){
+      const st=stat(s); if(!st.t)continue;
+      if(st.n===st.t){run++;best=Math.max(best,run)}else if(s!==today)run=0;
+    }
+    return{cur:run,best};
+  },[habits,logs]);
+
+  const rate30=useMemo(()=>{
+    let n=0,t=0;
+    for(let i=0;i<30;i++){const st=stat(addD(today,-i));n+=st.n;t+=st.t}
+    return t?Math.round(100*n/t):0;
+  },[habits,logs]);
+
+  const save=h=>{
+    setHabits(hs=>hs.some(x=>x.id===h.id)?hs.map(x=>x.id===h.id?h:x):[...hs,h]);
+    setEdit(null);
+  };
+  const del=h=>{if(confirm('¿Eliminar «'+h.name+'»? Se borrará también su historial.')){
+    setHabits(hs=>hs.filter(x=>x.id!==h.id));
+    setLogs(l=>{const n={};for(const k in l){const o={...l[k]};delete o[h.id];n[k]=o}return n});
+    setEdit(null);}};
+  const newH=()=>({id:'h'+Date.now(),emoji:'✅',name:'',cat:'salud',color:COLS[0],days:[0,1,2,3,4,5,6],goal:0,unit:'',step:1,created:today});
+
+  const exp=()=>{const b=new Blob([JSON.stringify({habits,logs})],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='habitos-backup.json';a.click()};
+  const imp=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const d=JSON.parse(t);setHabits(d.habits||[]);setLogs(d.logs||{})}catch(x){alert('Archivo no válido')}})};
+
+  /* ---------- HOY ---------- */
+  const Hoy=()=>{
+    const list=habits.filter(h=>act(h,day));
+    const st=stat(day);
+    const label=pd(day).toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
+    const groups=CATS.map(c=>[c[1],list.filter(h=>h.cat===c[0])]).filter(g=>g[1].length);
+    return <>
+      <div className="top">
+        <div><h1>{day===today?'Hoy':label.split(',')[0]}</h1><small style={{color:'var(--mu)'}}>{label}</small></div>
+        <Ring p={st.t?st.n/st.t:0}/>
+      </div>
+      <div className="nav" style={{marginBottom:6}}>
+        <button className="ib" onClick={()=>setDay(addD(day,-1))}>‹</button>
+        <button className="ib" style={{width:'auto',padding:'0 14px',fontSize:14}} onClick={()=>setDay(today)}>Ir a hoy</button>
+        <button className="ib" onClick={()=>setDay(addD(day,1))}>›</button>
+      </div>
+      {!habits.length&&<div className="empty">Todavía no tienes hábitos.<br/><button className="btn" onClick={()=>setEdit(newH())}>Crear el primero</button></div>}
+      {habits.length>0&&!list.length&&<div className="empty">No hay hábitos programados para este día.</div>}
+      {groups.map(([name,hs])=><div key={name}>
+        <h2>{name}</h2>
+        {hs.map(h=>{
+          const v=val(day,h.id),d=isDone(h,day);
+          return <div key={h.id} className={'row'+(d?' done':'')} style={{'--c':h.color}}>
+            {h.goal>0?<>
+              <div className="nm"><b>{h.emoji||'🔹'} {h.name}</b><div className="bar"><i style={{width:Math.min(100,100*v/h.goal)+'%'}}/></div></div>
+              <div className="qty">
+                <button onClick={()=>setVal(day,h.id,v-h.step)}>−</button>
+                <span>{v}/{h.goal} {h.unit}</span>
+                <button onClick={()=>setVal(day,h.id,v+h.step)}>+</button>
+              </div></>:<>
+              <div className="nm"><b>{h.emoji||'🔹'} {h.name}</b></div>
+              <button className={'chk'+(d?' on':'')} style={{'--c':h.color}} onClick={()=>setVal(day,h.id,d?0:1)}>{d?'✓':''}</button></>}
+          </div>;
+        })}
+      </div>)}
+    </>;
+  };
+
+  /* ---------- CALENDARIO ---------- */
+  const Cal=()=>{
+    const [y,m]=month.split('-').map(Number);
+    const off=(new Date(y,m-1,1).getDay()+6)%7, n=new Date(y,m,0).getDate();
+    const go=k=>{const d=new Date(y,m-1+k,1);setMonth(d.getFullYear()+'-'+pad(d.getMonth()+1))};
+    const cells=[];
+    for(let i=0;i<off;i++)cells.push(<div key={'e'+i}/>);
+    for(let d=1;d<=n;d++){
+      const s=month+'-'+pad(d),st=stat(s),r=st.t?st.n/st.t:null;
+      const bg=r==null?'var(--s1)':r>=1?'var(--ok)':r>0?'rgba(139,156,255,'+(0.15+0.5*r)+')':'var(--s1)';
+      cells.push(<button key={d} className={'cell'+(s===day?' sel':'')+(s===today?' td':'')}
+        style={{background:bg,color:r>=1?'#0d1a13':'var(--tx)'}} onClick={()=>{setDay(s);setTab('hoy')}}>{d}</button>);
+    }
+    return <>
+      <div className="top">
+        <h1>{pd(month+'-01').toLocaleDateString('es-ES',{month:'long',year:'numeric'})}</h1>
+        <div className="nav"><button className="ib" onClick={()=>go(-1)}>‹</button><button className="ib" onClick={()=>go(1)}>›</button></div>
+      </div>
+      <div className="grid">{DL.map(d=><div key={d} className="h">{d}</div>)}{cells}</div>
+      <p style={{color:'var(--mu)',fontSize:13}}>Verde: día completo. Más claro: a medias. Toca un día para verlo o editarlo.</p>
+    </>;
+  };
+
+  /* ---------- ESTADÍSTICAS ---------- */
+  const Stats=()=>{
+    const days=[...Array(14)].map((_,i)=>addD(today,i-13));
+    const per=habits.map(h=>{let n=0,t=0;for(let i=0;i<30;i++){const s=addD(today,-i);if(act(h,s)){t++;if(isDone(h,s))n++}}return{h,p:t?Math.round(100*n/t):0}});
+    return <>
+      <div className="top"><h1>Estadísticas</h1></div>
+      <div className="stats">
+        <div className="card"><b>{streaks.cur}</b><small>racha actual</small></div>
+        <div className="card"><b>{streaks.best}</b><small>mejor racha</small></div>
+        <div className="card"><b>{rate30}%</b><small>últimos 30 días</small></div>
+      </div>
+      <h2>Últimos 14 días</h2>
+      <div className="card"><div className="chart">{days.map(s=>{const st=stat(s),r=st.t?st.n/st.t:0;
+        return <div key={s}><i style={{height:Math.max(3,r*80)+'%',background:r>=1?'var(--ok)':'var(--ac)',opacity:st.t?1:.25}}/><small>{pd(s).getDate()}</small></div>})}</div></div>
+      <h2>Cumplimiento por hábito (30 días)</h2>
+      {!per.length&&<div className="empty">Crea hábitos para ver sus estadísticas.</div>}
+      {per.map(({h,p})=><div key={h.id} className="row" style={{'--c':h.color}}>
+        <div className="nm"><b>{h.emoji||'🔹'} {h.name}</b><small>{catName(h.cat)}</small><div className="bar"><i style={{width:p+'%'}}/></div></div>
+        <b>{p}%</b></div>)}
+    </>;
+  };
+
+  /* ---------- HÁBITOS ---------- */
+  const Manage=()=><>
+    <div className="top"><h1>Hábitos</h1></div>
+    {habits.map(h=><button key={h.id} className="row" style={{'--c':h.color,width:'100%',textAlign:'left'}} onClick={()=>setEdit(h)}>
+      <div className="nm"><b>{h.emoji||'🔹'} {h.name}</b><small>{catName(h.cat)} · {h.days.length===7?'todos los días':DI.map((d,i)=>h.days.includes(d)?DL[i]:'').join('')}{h.goal>0?' · '+h.goal+' '+h.unit:''}</small></div>
+      <span style={{color:'var(--mu)'}}>›</span></button>)}
+    <button className="btn" style={{marginTop:8}} onClick={()=>setEdit(newH())}>Añadir hábito</button>
+    <h2>Copia de seguridad</h2>
+    <div style={{display:'grid',gap:8}}>
+      <button className="btn g" onClick={exp}>Exportar datos</button>
+      <label className="btn g" style={{margin:0,textAlign:'center',cursor:'pointer',color:'var(--tx)'}}>Importar datos<input type="file" accept=".json" onChange={imp} style={{display:'none'}}/></label>
+    </div>
+    <p style={{color:'var(--mu)',fontSize:13}}>Los datos se guardan solo en este navegador. Exporta de vez en cuando por si cambias de móvil.</p>
+  </>;
+
+  return <>
+    {tab==='hoy'&&Hoy()}{tab==='cal'&&Cal()}{tab==='stats'&&Stats()}{tab==='hab'&&Manage()}
+    {!edit&&<button className="fab" aria-label="Añadir hábito" onClick={()=>setEdit(newH())}>+</button>}
+    <div className="tabs"><div>
+      {[['hoy','Hoy'],['cal','Calendario'],['stats','Estadísticas'],['hab','Hábitos']].map(t=>
+        <button key={t[0]} className={tab===t[0]?'on':''} onClick={()=>setTab(t[0])}>{t[1]}</button>)}
+    </div></div>
+    {edit&&<Form h={edit} isNew={!habits.some(x=>x.id===edit.id)} onSave={save} onDel={()=>del(edit)} onClose={()=>setEdit(null)}/>}
+  </>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
